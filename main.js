@@ -232,6 +232,11 @@ async function main() {
     } catch (e) {
       console.log('failed to stream', url, e)
     }
+    //reload page to make sure the local storage is set
+    try {
+      await page.reload();
+    } catch (e) {
+    }
 
     //listen to StopRecording event of the page, and close the page when it's fired
     page.on('console', async msg => {
