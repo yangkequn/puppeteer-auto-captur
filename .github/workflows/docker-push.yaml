@@ -3,10 +3,10 @@ name: Docker build and push
 on:
   push:
     branches:
-      - 'master'
+      - "master"
 
 env:
-  USE_GHCR: '0'  # 设置 USE_GHCR 环境变量
+  USE_GHCR: "0" # 设置 USE_GHCR 环境变量
   PLATFORMS: ${{ vars.PLATFORMS || 'linux/amd64' }}
 
 jobs:
@@ -37,7 +37,6 @@ jobs:
           username: ${{ secrets.DOCKERHUBACCOUNT }}
           password: ${{ secrets.DOCKERHUBPASS }}
 
-
       - name: Build and push
         uses: docker/build-push-action@v4
         if: ${{ env.USE_GHCR != '1' }}
@@ -45,7 +44,7 @@ jobs:
           context: .
           platforms: ${{ vars.PLATFORMS }}
           push: true
-          tags: ${{ github.actor }}/go-2-io
+          tags: ${{ github.actor }}/puppeteer-auto-capture
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
 
@@ -64,6 +63,6 @@ jobs:
           context: .
           platforms: ${{ vars.PLATFORMS }}
           push: true
-          tags: ghcr.io/${{ github.actor }}/go-2-io
+          tags: ghcr.io/${{ github.actor }}/puppeteer-auto-capture
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
