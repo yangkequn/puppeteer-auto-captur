@@ -240,8 +240,8 @@ async function main() {
         lastPage = null
       }
     })
-    //wait 3 seconds for the page to load
-    await page.waitFor(3000)
+    // Wait for 3 seconds
+    await new Promise(resolve => setTimeout(resolve, 3000))
 
     try {
       const stream = await getStream(page, {
