@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+tag=$1
+test -n "$tag" || { echo "Usage: $0 <tag>"; exit 1; }
+script/build
+git tag $tag
+git push --tags
+gh release create $tag --generate-notes
+gh release upload $tag dist/ChromeCapture*.zip dist/chrome-capture-for-channels-win-x64.exe
