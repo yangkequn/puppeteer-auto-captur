@@ -3,7 +3,7 @@ name: Docker build and push
 on:
   push:
     branches:
-      - '2-io'
+      - 'master'
 
 env:
   USE_GHCR: '0'  # 设置 USE_GHCR 环境变量
