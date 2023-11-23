@@ -210,33 +210,34 @@ async function main() {
 
     var browser, page
     try {
-      browser = await getCurrentBrowser()
-      page = await browser.newPage()
+      browser = await getCurrentBrowser();
+      page = await browser.newPage();
       //await page.setBypassCSP(true)
       //page.on('console', msg => console.log(msg.text()))
     } catch (e) {
-      console.log('failed to start browser page', url, e)
-      res.status(500).send(`failed to start browser page: ${e}`)
-      return
+      console.log('failed to start browser page', url, e);
+      res.status(500).send(`failed to start browser page: ${e}`);
+      return;
     }
     //resize page to viewport size,full screen
-    await page.setViewport(viewport)
+    await page.setViewport(viewport);
 
     //set local storage jwt to `{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}`
     try {
-      await page.goto(url)
-      await page.evaluate(`(function() {
-      localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}')
-      localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo')
-    })()`)
+      await page.goto(url);
+      await page.evaluate(() => {
+        localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}'
+        );
+        localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo'
+        );
+      });
     } catch (e) {
-      console.log('failed to stream', url, e)
+      console.log('failed to stream', url, e);
     }
     //reload page to make sure the local storage is set
     try {
       await page.reload();
-    } catch (e) {
-    }
+    } catch (e) { }
 
     //listen to StopRecording event of the page, and close the page when it's fired
     page.on('console', async msg => {
