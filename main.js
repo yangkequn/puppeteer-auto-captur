@@ -204,6 +204,16 @@ async function main() {
 
   app.get('/stream.webm/:name?', async (req, res) => {
     var url = req.query.url
+    var play = req.query.play
+
+    // Set the response headers to stream the video
+    if (play == 'true') {
+      res.setHeader('Content-Type', 'video/webm')
+      res.setHeader('Transfer-Encoding', 'chunked')
+      res.setHeader('Cache-Control', 'no-cache')
+      res.setHeader('Connection', 'keep-alive')
+    }
+
 
     var minimizeWindow = false
     if (process.platform == 'darwin') minimizeWindow = true
@@ -236,12 +246,18 @@ async function main() {
       });
       //refresh page
       await page.reload();
-      //to enable audio, click on the page to activate it
+      // To enable audio, click on the page to activate it
       await page.mouse.click(1, 1);
-      
 
-
-
+      // Enable audio playback
+      await page.evaluate(() => {
+        const audios = document.querySelectorAll('audio');
+        audios.forEach(audio => {
+          audio.muted = false;
+          audio.volume = 1.0;
+        });
+      });
+ 
     } catch (e) {
       console.log('failed to stream', url, e);
     }
@@ -289,38 +305,10 @@ async function main() {
     }
 
     try {
-      await page.goto(url)
+      //await page.goto(url)
 
 
 
-      if (waitForVideo) {
-        await page.waitForSelector('video')
-        await page.waitForFunction(`(function() {
-          let video = document.querySelector('video')
-          return video.readyState === 4
-        })()`)
-        await page.evaluate(`(function() {
-          let video = document.querySelector('video')
-          video.style.setProperty('position', 'fixed', 'important')
-          video.style.top = '0'
-          video.style.left = '0'
-          video.style.width = '100%'
-          video.style.height = '100%'
-          video.style.zIndex = '999000'
-          video.style.background = 'black'
-          video.style.cursor = 'none'
-          video.style.transform = 'translate(0, 0)'
-          video.style.objectFit = 'contain'
-          video.play()
-          video.muted = false
-          video.removeAttribute('muted')
-
-          let header = document.querySelector('.header-container')
-          if (header) {
-            header.style.zIndex = '0'
-          }
-        })()`)
-      }
 
       const uiSize = await page.evaluate(`(function() {
         return {
