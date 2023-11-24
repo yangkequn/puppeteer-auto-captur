@@ -225,12 +225,13 @@ async function main() {
     //set local storage jwt to `{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}`
     try {
       await page.goto(url);
-      await page.evaluate(() => {
-        localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}'
-        );
-        localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo'
-        );
-      });
+      // Wait for 1 seconds
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      await page.evaluate(`(function() {
+      localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}')
+      localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo')
+    })()`)
     } catch (e) {
       console.log('failed to stream', url, e);
     }
