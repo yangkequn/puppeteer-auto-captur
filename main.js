@@ -236,8 +236,6 @@ async function main() {
     try {
       await page.goto(url);
 
-      //to enable audio, click on the page to activate it
-      await page.mouse.click(1, 1);
 
       await page.evaluate(() => {
         // You can set key-value pairs in localStorage like this
@@ -247,29 +245,32 @@ async function main() {
       //refresh page
       await page.reload();
       // To enable audio, click on the page to activate it
-      await page.mouse.click(1, 1);
+      //await page.mouse.click(1, 1);
 
       // Enable audio playback
-      await page.evaluate(() => {
-        const audios = document.querySelectorAll('audio');
-        audios.forEach(audio => {
-          audio.muted = false;
-          audio.volume = 1.0;
-        });
-      });
+      // await page.evaluate(() => {
+      //   const audios = document.querySelectorAll('audio');
+      //   audios.forEach(audio => {
+      //     audio.muted = false;
+      //     audio.volume = 1.0;
+      //   });
+      // });
  
     } catch (e) {
       console.log('failed to stream', url, e);
     }
     //listen to StopRecording event of the page, and close the page when it's fired
     page.on('console', async msg => {
-      if (msg.text() === 'StopRecording') {
+      if (msg.text() === 'AutoPlayEnd') {
         await page.close()
         lastPage = null
       }
     })
     // Wait for 3 seconds
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    // wait untile  window.AutoPlayStart is true    
+    await page.waitForFunction('window.AutoPlayStart === true', { timeout: 30000 })
+
+    
 
     try {
       const stream = await getStream(page, {
