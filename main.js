@@ -225,6 +225,10 @@ async function main() {
     //set local storage jwt to `{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}`
     try {
       await page.goto(url);
+
+      //to enable audio, click on the page to activate it
+      await page.mouse.click(1, 1);
+
       await page.evaluate(() => {
         // You can set key-value pairs in localStorage like this
         localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}');
@@ -232,6 +236,8 @@ async function main() {
       });
       //refresh page
       await page.reload();
+      //to enable audio, click on the page to activate it
+      await page.mouse.click(1, 1);
       
 
 
