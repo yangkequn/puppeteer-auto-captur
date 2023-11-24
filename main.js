@@ -229,18 +229,7 @@ async function main() {
         localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}');
         localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo');
       });
-      await page.goto("http://127.0.0.1:8080/HGET--UserAvatar--!JPG?F=7755563949536471");
-
-      //key press f12 to open dev tools
-      await page.keyboard.down('Control');
-      await page.keyboard.press('F12');
-      await page.keyboard.up('Control');
-      // show network tab
-      await page.keyboard.down('Control');
-      await page.keyboard.down('Shift');
-      await page.keyboard.press('M');
-      await page.keyboard.up('Control');
-      await page.keyboard.up('Shift');
+      await page.goto(url);
 
 
 
