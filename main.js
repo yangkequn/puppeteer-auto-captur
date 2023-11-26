@@ -221,12 +221,20 @@ async function main() {
     var browser, page
     try {
       browser = await getCurrentBrowser();
+      //await page.setBypassCSP(true)
+      //page.on('console', msg => console.log(msg.text()))
+    } catch (e) {
+      console.log('failed to getCurrentBrowser', url, e);
+      res.status(500).send(`failed to getCurrentBrowser: ${e}`);
+      return;
+    }
+    try {
       page = await browser.newPage();
       //await page.setBypassCSP(true)
       //page.on('console', msg => console.log(msg.text()))
     } catch (e) {
-      console.log('failed to start browser page', url, e);
-      res.status(500).send(`failed to start browser page: ${e}`);
+      console.log('failed to start newPage', url, e);
+      res.status(500).send(`failed to start newPage: ${e}`);
       return;
     }
     //resize page to viewport size,full screen
@@ -244,18 +252,7 @@ async function main() {
       });
       //refresh page
       await page.reload();
-      // To enable audio, click on the page to activate it
-      //await page.mouse.click(1, 1);
 
-      // Enable audio playback
-      // await page.evaluate(() => {
-      //   const audios = document.querySelectorAll('audio');
-      //   audios.forEach(audio => {
-      //     audio.muted = false;
-      //     audio.volume = 1.0;
-      //   });
-      // });
- 
     } catch (e) {
       console.log('failed to stream', url, e);
     }
@@ -270,7 +267,7 @@ async function main() {
     // wait untile  window.AutoPlayStart is true    
     await page.waitForFunction('window.AutoPlayStart === true', { timeout: 30000 })
 
-    
+
 
     try {
       const stream = await getStream(page, {
