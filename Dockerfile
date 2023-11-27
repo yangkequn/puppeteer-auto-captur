@@ -9,7 +9,7 @@ RUN apt-get update \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update \
     && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf  libxss1 --no-install-recommends \
-    && apt-get install -y msttcorefonts 
+    && apt-get install -y msttcorefonts -qq  \
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
