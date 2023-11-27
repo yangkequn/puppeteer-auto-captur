@@ -10,7 +10,7 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends     
 #安装sans-serif字体
-RUN apt-get install -y ttf-dejavu --no-install-recommends     
+#RUN apt-get install -y ttf-dejavu --no-install-recommends     
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
