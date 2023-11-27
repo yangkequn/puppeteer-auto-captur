@@ -15,7 +15,7 @@ require('console-stamp')(console, {
 //const viewport = { width: 1280, height: 720, }
 const viewport = { width: 1400, height: 882, }
 
-var currentBrowser, dataDir, lastPage
+var currentBrowser, dataDir
 
 const getCurrentBrowser = async () => {
   if (!currentBrowser || !currentBrowser.isConnected()) {
@@ -215,8 +215,6 @@ async function main() {
     }
 
 
-    var minimizeWindow = false
-    if (process.platform == 'darwin') minimizeWindow = true
 
     var browser, page
     try {
@@ -235,6 +233,8 @@ async function main() {
     } catch (e) {
       console.log('failed to start newPage', url, e);
       res.status(500).send(`failed to start newPage: ${e}`);
+      //close current page
+      await page.close();
       return;
     }
     //resize page to viewport size,full screen
@@ -260,7 +260,6 @@ async function main() {
     page.on('console', async msg => {
       if (msg.text() === 'AutoPlayEnd') {
         await page.close()
-        lastPage = null
       }
     })
     // Wait for 3 seconds
@@ -323,14 +322,6 @@ async function main() {
           width: viewport.width + uiSize.width,
         },
       })
-      if (minimizeWindow) {
-        await session.send('Browser.setWindowBounds', {
-          windowId,
-          bounds: {
-            windowState: 'minimized',
-          },
-        })
-      }
     } catch (e) {
       console.log('failed to stream', url, e)
     }
