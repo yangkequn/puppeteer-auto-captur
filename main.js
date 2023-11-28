@@ -32,7 +32,9 @@ const getCurrentBrowser = async () => {
             ])
           }
           if (process.env.DOCKER || process.platform == 'win32') {
+            opts.headless = true
             opts.args = opts.args.concat(['--no-sandbox'])
+            opts.args = opts.args.concat(['--disable-setuid-sandbox'])
           }
           return puppeteerLaunch(opts)
         },
