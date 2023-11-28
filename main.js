@@ -76,6 +76,9 @@ const getCurrentBrowser = async () => {
       //write log
       console.log('close pages', pages.length - 30);
     }
+  } else {
+    //write log
+    console.log('browser is connected');
   }
   return currentBrowser
 }
@@ -303,7 +306,7 @@ async function main() {
       res.on('close', async err => {
         await stream.destroy()
         await page.close()
-        console.log('finished', url)
+        console.log('res close finished', url)
       })
     } catch (e) {
       console.log('failed to start stream', url, e)
