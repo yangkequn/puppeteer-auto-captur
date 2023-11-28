@@ -32,7 +32,7 @@ const getCurrentBrowser = async () => {
             ])
           }
           if (process.env.DOCKER || process.platform == 'win32') {
-            opts.headless = true
+            opts.headless = false
             opts.args = opts.args.concat(['--no-sandbox'])
             opts.args = opts.args.concat(['--disable-setuid-sandbox'])
           }
