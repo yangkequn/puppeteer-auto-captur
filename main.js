@@ -18,7 +18,8 @@ const viewport = { width: 1400, height: 882, }
 var currentBrowser, dataDir
 
 const getCurrentBrowser = async () => {
-  if (!currentBrowser || !currentBrowser.isConnected()) {
+  if (!currentBrowser || !currentBrowser?.isConnected()) {
+    console.log('launching browser')
     currentBrowser = await launch(
       {
         launch: opts => {
@@ -62,11 +63,19 @@ const getCurrentBrowser = async () => {
       }
     )
     currentBrowser.on('close', () => {
+      console.log('browser closed')
       currentBrowser = null
     })
-    currentBrowser.pages().then(pages => {
-      pages.forEach(page => page.close())
-    })
+    // currentBrowser.pages().then(pages => {
+    //   pages.forEach(page => page.close())
+    // })
+    //if there's over 30 pages, close the first ones to avoid memory leak
+    let pages = await currentBrowser.pages()
+    if (pages.length > 30) {
+      pages.slice(0, pages.length - 30).forEach(page => page.close())
+      //write log
+      console.log('close pages', pages.length - 30);
+    }
   }
   return currentBrowser
 }
