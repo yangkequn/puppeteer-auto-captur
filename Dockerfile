@@ -8,14 +8,17 @@ RUN apt-get update \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update \
-    && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends     
+    && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends 
+#安装中文字体 ttf-wqy*
+RUN apt-get install -y ttf-wqy-zenhei --no-install-recommends
+
 #安装sans-serif字体
 #RUN apt-get install -y ttf-dejavu --no-install-recommends     
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
 #copy  local.conf to /etc/fonts/local.conf
-COPY local.conf /etc/fonts/local.conf
+COPY ./local.conf /etc/fonts/local.conf
 RUN chown -R chrome:chrome /home/chrome
 USER chrome
 
