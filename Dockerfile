@@ -17,6 +17,12 @@ RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
 COPY local.conf /etc/fonts/local.conf
 #copy Customs.css /home/chrome/.config/google-chrome/Default/User\ StyleSheets/Custom.css
+# ensure directory exists for chrome user
+RUN mkdir -p /home/chrome/.config/google-chrome \
+    && chown -R chrome:chrome /home/chrome \
+    && mkdir -p /home/chrome/.config/google-chrome/Default/User\ StyleSheets \
+    && chown -R chrome:chrome /home/chrome/.config/google-chrome/Default/User\ StyleSheets  
+
 RUN copy Custom.css /home/chrome/.config/google-chrome/Default/User\ StyleSheets/Custom.css
 
 RUN chown -R chrome:chrome /home/chrome
