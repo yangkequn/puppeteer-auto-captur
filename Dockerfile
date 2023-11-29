@@ -14,7 +14,7 @@ RUN apt-get update \
 COPY local.conf /etc/fonts/conf.d/
 RUN apt-get update && apt-get install -y \
     fontconfig \
-    fonts-noto \
+    fonts-noto-cjk \
     fonts-liberation \
     fonts-ipafont-gothic \
     fonts-wqy-zenhei \
@@ -36,9 +36,6 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
-#重新生成字体缓存，以确保新安装的字体和配置被正确识别。
-RUN fc-cache -fv
-
 RUN chown -R chrome:chrome /home/chrome
 USER chrome
 
