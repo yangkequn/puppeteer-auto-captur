@@ -29,7 +29,7 @@ WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
 COPY local.conf /etc/fonts/local.conf
-COPY local.conf /etc/etc/fonts/conf.d/
+COPY local.conf /etc/fonts/conf.d/
 #重新生成字体缓存，以确保新安装的字体和配置被正确识别。
 RUN fc-cache -fv
 
