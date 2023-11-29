@@ -12,11 +12,26 @@ RUN apt-get update \
 #安装中文字体 ttf-wqy*
 RUN apt-get install -y ttf-wqy-zenhei --no-install-recommends
 
+# 安装字体和fontconfig
+RUN apt-get update && apt-get install -y \
+    fontconfig \
+    fonts-noto \
+    fonts-liberation \
+    fonts-ipafont-gothic \
+    fonts-wqy-zenhei \
+    fonts-thai-tlwg \
+    fonts-kacst \
+    fonts-freefont-ttf \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
 COPY local.conf /etc/fonts/local.conf
-
+COPY local.conf /etc/etc/fonts/conf.d/
+#重新生成字体缓存，以确保新安装的字体和配置被正确识别。
+RUN fc-cache -fv
 
 RUN chown -R chrome:chrome /home/chrome
 USER chrome
