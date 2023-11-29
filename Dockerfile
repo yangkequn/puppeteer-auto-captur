@@ -12,12 +12,13 @@ RUN apt-get update \
 #安装中文字体 ttf-wqy*
 RUN apt-get install -y ttf-wqy-zenhei --no-install-recommends
 
-#安装sans-serif字体
-#RUN apt-get install -y ttf-dejavu --no-install-recommends     
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
 COPY local.conf /etc/fonts/local.conf
+#copy Customs.css /home/chrome/.config/google-chrome/Default/User\ StyleSheets/Custom.css
+RUN copy Custom.css /home/chrome/.config/google-chrome/Default/User\ StyleSheets/Custom.css
+
 RUN chown -R chrome:chrome /home/chrome
 USER chrome
 
