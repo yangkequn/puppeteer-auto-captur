@@ -17,8 +17,7 @@ RUN apt-get install -y ttf-wqy-zenhei --no-install-recommends
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
-#copy  local.conf to /etc/fonts/local.conf
-COPY ./local.conf /etc/fonts/local.conf
+COPY local.conf /etc/fonts/local.conf
 RUN chown -R chrome:chrome /home/chrome
 USER chrome
 
