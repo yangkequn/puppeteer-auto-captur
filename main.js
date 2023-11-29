@@ -242,7 +242,7 @@ async function main() {
     }
     try {
       page = await browser.newPage();
-      //await page.setBypassCSP(true)
+      await page.setBypassCSP(true)
       //page.on('console', msg => console.log(msg.text()))
     } catch (e) {
       console.log('failed to start newPage', url, e);
@@ -305,22 +305,19 @@ async function main() {
       stream.pipe(res)
       res.on('close', async err => {
         await stream.destroy()
-        await page.close()
+        //page closed already by StopRecording event
+        //await page.close()
         console.log('res close finished', url)
       })
     } catch (e) {
       console.log('failed to start stream', url, e)
       res.status(500).send(`failed to start stream: ${e}`)
-      await page.close()
+      //page closed already by StopRecording event
+      //await page.close()
       return
     }
 
     try {
-      //await page.goto(url)
-
-
-
-
       const uiSize = await page.evaluate(`(function() {
         return {
           height: window.outerHeight - window.innerHeight,
