@@ -36,8 +36,6 @@ const getCurrentBrowser = async () => {
             opts.headless = false
             opts.args = opts.args.concat(['--no-sandbox'])
             opts.args = opts.args.concat(['--disable-setuid-sandbox'])
-            opts.args = opts.args.concat(['--font-directory=/usr/share/fonts/truetype'])
-            opts.args = opts.args.concat(['--font-family=sans-serif'])
           }
           return puppeteerLaunch(opts)
         },

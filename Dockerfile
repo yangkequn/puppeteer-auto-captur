@@ -9,10 +9,9 @@ RUN apt-get update \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update \
     && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 --no-install-recommends 
-#安装中文字体 ttf-wqy*
-RUN apt-get install -y ttf-wqy-zenhei --no-install-recommends
 
-# 安装字体和fontconfig
+# 安装字体和fontconfig，以确保中文和日文字符正确显示
+COPY local.conf /etc/fonts/conf.d/
 RUN apt-get update && apt-get install -y \
     fontconfig \
     fonts-noto \
@@ -23,13 +22,20 @@ RUN apt-get update && apt-get install -y \
     fonts-kacst \
     fonts-freefont-ttf \
     --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+    # 清理apt缓存以减少镜像大小
+    rm -rf /var/lib/apt/lists/* && \
+    # 下载Roboto字体
+    mkdir -p /usr/share/fonts/truetype/roboto && \
+    cd /usr/share/fonts/truetype/roboto && \
+    wget -q https://fonts.google.com/download?family=Roboto -O roboto.zip && \
+    unzip roboto.zip && \
+    rm roboto.zip && \
+    # 更新字体缓存
+    fc-cache -fv
 
 WORKDIR /home/chrome
 RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome
 COPY main.js package.json yarn.lock /home/chrome
-COPY local.conf /etc/fonts/local.conf
-COPY local.conf /etc/fonts/conf.d/
 #重新生成字体缓存，以确保新安装的字体和配置被正确识别。
 RUN fc-cache -fv
 
