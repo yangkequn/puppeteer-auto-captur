@@ -23,7 +23,7 @@ RUN mkdir -p /home/chrome/.config/google-chrome \
     && mkdir -p /home/chrome/.config/google-chrome/Default/User\ StyleSheets \
     && chown -R chrome:chrome /home/chrome/.config/google-chrome/Default/User\ StyleSheets  
 
-RUN copy Custom.css /home/chrome/.config/google-chrome/Default/User\ StyleSheets/Custom.css
+COPY Custom.css /home/chrome/.config/google-chrome/Default/User\ StyleSheets/Custom.css
 
 RUN chown -R chrome:chrome /home/chrome
 USER chrome
