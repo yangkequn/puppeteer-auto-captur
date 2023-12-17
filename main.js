@@ -13,8 +13,7 @@ require('console-stamp')(console, {
 
 //const viewport = {  width: 1920,  height: 1080,}
 //const viewport = { width: 1280, height: 720, }
-const viewport = { width: 1400, height: 882, }
-
+const viewport = { width: 1400, height: 882 }
 var currentBrowser, dataDir
 
 const getCurrentBrowser = async () => {
@@ -30,6 +29,8 @@ const getCurrentBrowser = async () => {
             opts.args = opts.args.concat([
               `--load-extension=${path.join(dataDir, 'extension')}`,
               `--disable-extensions-except=${path.join(dataDir, 'extension')}`,
+              //后台标签保持活动状态
+              '--disable-background-timer-throttling',
             ])
           }
           if (process.env.DOCKER || process.platform == 'win32') {
@@ -51,6 +52,8 @@ const getCurrentBrowser = async () => {
           '--hide-crash-restore-bubble',
           '--disable-blink-features=AutomationControlled',
           '--hide-scrollbars',
+          //后台标签保持活动状态
+          '--disable-background-timer-throttling',
         ],
         ignoreDefaultArgs: [
           '--enable-automation',
@@ -66,19 +69,16 @@ const getCurrentBrowser = async () => {
       console.log('browser closed')
       currentBrowser = null
     })
-    // currentBrowser.pages().then(pages => {
-    //   pages.forEach(page => page.close())
-    // })
-    //if there's over 30 pages, close the first ones to avoid memory leak
-    let pages = await currentBrowser.pages()
-    if (pages.length > 30) {
-      pages.slice(0, pages.length - 30).forEach(page => page.close())
-      //write log
-      console.log('close pages', pages.length - 30);
-    }
   } else {
     //write log
     console.log('browser is connected');
+  }
+  //if there's over 10 pages, close the first ones to avoid memory leak
+  let pages = await currentBrowser.pages()
+  if (pages.length > 10) {
+    pages.slice(0, pages.length - 10).forEach(page => page.close())
+    //write log
+    console.log('close pages', pages.length - 10);
   }
   return currentBrowser
 }
@@ -258,14 +258,16 @@ async function main() {
     try {
       await page.goto(url);
 
-
-      await page.evaluate(() => {
-        // You can set key-value pairs in localStorage like this
-        localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}');
-        localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo');
-      });
-      //refresh page
-      await page.reload();
+      //if os in not mac os
+      if (process.platform !== 'darwin') {
+        await page.evaluate(() => {
+          // You can set key-value pairs in localStorage like this
+          localStorage.setItem('jwt', '{"sub":"Kequn","jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo","id":7755411967701254,"pub":7755563949536471,"temporaryAccount":false}');
+          localStorage.setItem('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDMwMzMxNjgsImlhdCI6MTcwMDQ0MTE2OCwiaWQiOjc3NTU0MTE5Njc3MDEyNTQsInB1YiI6Nzc1NTU2Mzk0OTUzNjQ3MSwic3ViIjoiS2VxdW4iLCJ0ZW1wb3JhcnlBY2NvdW50IjpmYWxzZX0.9DtAiRKDiaBgudYhaRCEY8fa8xXH5rs51hvDrspKtPo');
+        });
+        //refresh page
+        await page.reload();
+      }
 
     } catch (e) {
       console.log('failed to stream', url, e);
@@ -278,8 +280,14 @@ async function main() {
     })
     // Wait for 3 seconds
     // wait untile  window.AutoPlayStart is true    
-    await page.waitForFunction('window.AutoPlayStart === true', { timeout: 30000 })
-
+    var now = new Date().getTime();
+    await page.waitForFunction('window.AutoPlayStart === true', { timeout: 10000 })
+    //if timeout  ,close page and return
+    if (new Date().getTime() - now > 9000) {
+      await page.close();
+      res.status(500).send(`failed to start stream: timeout`);
+      return;
+    }
 
 
     try {
